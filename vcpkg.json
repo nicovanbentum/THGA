@@ -1,0 +1,23 @@
+{
+	"name": "adam",
+	"version-string": "0.1",
+    "dependencies": [
+      {
+        "name": "imgui",
+        "features": [
+                        "sdl2-binding", 
+                        "opengl2-binding", 
+                        "opengl3-binding"
+                    ],
+        "platform": "windows & static"
+    },
+      {
+        "name": "imgui-sfml",
+        "platform": "windows & static"
+      },
+      {
+        "name": "sfml",
+        "platform": "windows & static"
+      }
+    ]
+}
