@@ -22,7 +22,7 @@ bool AI::shouldFollow_followDirection(Enemy * p1, Character * p2, Audio & sound)
 			{
 				if (p1->getCurrentAnimation() != "WALKright") {
 					p1->setAnimation("WALKright", Animation::intervals::walk);
-					p1->setTexture(p1->currentAnimation.nextFrame());
+					p1->setTexture(p1->currentAnimation->nextFrame());
 				}
 				if (p1->getVelocity().x == 0 && p1->lastDirection != 0 && p1->getVelocity().y == 0) {
 					p1->setVelocity(sf::Vector2f(p1->getVelocity().x, -4));
@@ -91,7 +91,7 @@ bool AI::shouldFollow_followDirection(Enemy * p1, Character * p2, Audio & sound)
 		if (p1->isWalking()) {
 			if (p1->getCurrentAnimation() != std::string("WALKright")) {
 				p1->setAnimation("WALKright", Animation::intervals::walk);
-				p1->setTexture(p1->currentAnimation.nextFrame());
+				p1->setTexture(p1->currentAnimation->nextFrame());
 			}
 			auto diff = p1->getPosition().x - p1->originPos.x;
 			if (p1->current_direction == movable::direction::LEFT) {
@@ -130,7 +130,7 @@ bool AI::shouldFollow_followDirection(Enemy * p1, Character * p2, Audio & sound)
 			dir = 0;
 			if (p1->getCurrentAnimation() != std::string("IDLEright")) {
 				p1->setAnimation("IDLEright", Animation::intervals::idle);
-				p1->setTexture(p1->currentAnimation.nextFrame());
+				p1->setTexture(p1->currentAnimation->nextFrame());
 			}
 			p1->setVelocity(sf::Vector2f(0, p1->getVelocity().y));
 			p1->lastDirection = 0;
@@ -150,7 +150,7 @@ void AI::walkRandomly(npc * p1) {
 	if (p1->isWalking()) {
 		if (p1->getCurrentAnimation() != "WALKright") {
 			p1->setAnimation("WALKright", Animation::intervals::walk);
-			p1->setTexture(p1->currentAnimation.nextFrame());
+			p1->setTexture(p1->currentAnimation->nextFrame());
 		}
 		if (p1->originPosition.x - p1->getPosition().x > 30) {
 			p1->setScale(sf::Vector2f(0.2, 0.2));
@@ -178,7 +178,7 @@ void AI::walkRandomly(npc * p1) {
 	else {
 		if (p1->getCurrentAnimation() != "IDLEright") {
 			p1->setAnimation("IDLEright", Animation::intervals::idle);
-			p1->setTexture(p1->currentAnimation.nextFrame());
+			p1->setTexture(p1->currentAnimation->nextFrame());
 		}
 		p1->setVelocity(sf::Vector2f(0,p1->getVelocity().y));
 		p1->lastDirection = 0;

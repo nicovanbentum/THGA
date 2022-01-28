@@ -32,9 +32,9 @@ void Level::enemy_factory(std::string s, AnimationManager & ani)
 
 		while (lvls_file >> png >> posx >> posy >> health)
 		{
-			enemies.push_back(Enemy(sf::Vector2f(stoi(posx), stoi(posy)), sf::Vector2f(0.2, 0.2), ani.animations[png], sf::Vector2f(0, 0), statistic(std::stoi(health), std::stoi(health))));
-			enemies.back().setAnimation("IDLEright", Animation::intervals::idle);
-			enemies.back().setTexture(enemies.back().currentAnimation.getCurrentFrame());
+			auto& enemy = enemies.emplace_back(sf::Vector2f(stoi(posx), stoi(posy)), sf::Vector2f(0.2, 0.2), ani.animations[png], sf::Vector2f(0, 0), statistic(std::stoi(health), std::stoi(health)));
+			enemy.setAnimation("IDLEright", Animation::intervals::idle);
+			enemy.setTexture(enemy.currentAnimation->getCurrentFrame());
 		}
 
 	}
@@ -78,9 +78,9 @@ void Level::npc_factory(std::string s, AnimationManager & ani)
 		std::vector<std::string> npc_text = {};
 		while (lvls_file >> png >> posx >> posy && getVectorString(lvls_file, npc_text))
 		{
-			npcs.push_back(npc(sf::Vector2f(stoi(posx), stoi(posy)), sf::Vector2f(0.2, 0.2), ani.animations[png], sf::Vector2f(0, 0), npc_text ));
-			npcs.back().setAnimation("IDLEright", Animation::intervals::idle);
-			npcs.back().setTexture(npcs.back().currentAnimation.getCurrentFrame());
+			auto& npc = npcs.emplace_back(sf::Vector2f(stoi(posx), stoi(posy)), sf::Vector2f(0.2, 0.2), ani.animations[png], sf::Vector2f(0, 0), npc_text );
+			npc.setAnimation("IDLEright", Animation::intervals::idle);
+			npc.setTexture(npc.currentAnimation->getCurrentFrame());
 			npc_text.clear();
 		}
 
