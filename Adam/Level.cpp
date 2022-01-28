@@ -11,13 +11,16 @@ void Level::draw(sf::RenderTarget & w)
 	w.draw(sprites["infinity"].first);
 }
 
-void Level::addSprite(const std::string & name, const std::string & location)
+std::future<void> Level::addSprite(const std::string & name, const std::string & location)
 {
-	std::cout << "Loading sprite: " << name << " at: " << location << std::endl;
+	std::cout << "Loading sprite: " << name << " at: " << location << '\n';
 	//sprites[name].second.setSmooth(true);
-	Collision::CreateTextureAndBitmask(sprites[name].second, location);
-	sprites[name].first.setTexture(sprites[name].second);
-
+	sprites.insert({ name, {sf::Sprite(), std::make_shared<sf::Texture>() } });
+	
+	return std::async(std::launch::async, ([name, location, this]() {
+		Collision::CreateTextureAndBitmask(sprites[name].second, location);
+		sprites[name].first.setTexture(*sprites[name].second);
+	}));
 }
 
 void Level::enemy_factory(std::string s, AnimationManager & ani)

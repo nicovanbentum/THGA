@@ -5,11 +5,14 @@ LvlManager::LvlManager(AnimationManager & animationManager) : ani(animationManag
 {
 
 	std::ifstream lvls_file("assets/backgrounds/lvls.txt");
+
+	std::vector<std::future<void>> futures;
+
 	if (lvls_file.is_open())
 	{
 		std::string level_name, level_part, location = "";
 		while (lvls_file >> level_name >> level_part >> location) {
-			std::cout << "Level name: " << level_name << std::endl; 
+			std::cout << "Level name: " << level_name << '\n';
 			auto level = levels.find(level_name);
 			if (level == levels.end()) {
 				levels[level_name] = Level();
@@ -29,10 +32,14 @@ LvlManager::LvlManager(AnimationManager & animationManager) : ani(animationManag
 				levels[level_name].set_next_level(location);
 			}
 			else {
-				levels[level_name].addSprite(level_part, location);
+				futures.push_back(levels[level_name].addSprite(level_part, location));
+
 			}
 		}
+	}
 
+	for (const auto& future : futures) {
+		future.wait();
 	}
 }
 

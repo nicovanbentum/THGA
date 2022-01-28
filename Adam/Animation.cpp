@@ -1,16 +1,15 @@
 #include "pch.h"
 #include "Animation.h"
 
-void Animation::addFrame(const std::string & location)
+std::future<void> Animation::addFrame(const std::string & location)
 {
-	textures.emplace_back(sf::Texture());
-	textures.back().setSmooth(true);
-	Collision::CreateTextureAndBitmask(textures.back(), location);
-}
+	textures.push_back(std::make_shared<sf::Texture>());
+	textures.back()->setSmooth(true);
+	const auto index = textures.size() - 1;
 
-void Animation::addFrame(sf::Texture & texture)
-{
-	textures.emplace_back(texture);
+	return std::async(std::launch::async, [index, location, this]() {
+		Collision::CreateTextureAndBitmask(textures[index], location);
+	});
 }
 
 std::shared_ptr<sf::Texture> Animation::nextFrame()

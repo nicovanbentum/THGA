@@ -39,7 +39,7 @@ public:
 	/// \brief Adds a frame by loading a texture from the disk at the specified path
 	/// \detail
 	/// This is the quickest addFrame variant.
-	void addFrame(const std::string & location);
+	std::future<void> addFrame(const std::string & location);
 	/// \brief Adds a frame to an animation.
 	//void addFrame(sf::Texture & texture);
 	/// \brief return the next frame of the animation by reference.

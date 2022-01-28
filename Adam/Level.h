@@ -43,7 +43,7 @@ public:
 	/// \brief adds a sprite to the level's layers. 
 	/// \detail
 	/// Loads a sprite from disk using the location parameter and stores it in the map of sprites using the name parameter.
-	void addSprite(const std::string & name, const std::string & location);
+	std::future<void> addSprite(const std::string & name, const std::string & location);
 	/// \brief factory that creates the enemies of this level using the factory pattern.
 	/// \detail
 	/// Loads the text file located at a path (s) and initializes all the enemies and stores them in the enemies vector.
