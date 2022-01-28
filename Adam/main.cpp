@@ -63,6 +63,7 @@ int main()
 	window.setKeyRepeatEnabled(false);
 	window.setMouseCursorVisible(false);
 	window.setFramerateLimit(61);
+	ImGui::SFML::Init(window);
 
 	//declare objects without constructing
 	deffered<AnimationManager> ani;

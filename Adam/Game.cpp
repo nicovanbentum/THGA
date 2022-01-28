@@ -73,6 +73,8 @@ void Game::handleInput()
 		sf::Event ev;
 		while (window.pollEvent(ev))
 		{
+			ImGui::SFML::ProcessEvent(window, ev);
+
 			if (ev.type == sf::Event::Closed)
 			{
 				geluidje.playSound("gameOver", 40);
@@ -160,6 +162,8 @@ void Game::handleInput()
 		sf::Event ev;
 		while (window.pollEvent(ev))
 		{
+			ImGui::SFML::ProcessEvent(window, ev);
+
 			switch (ev.type)
 			{
 			case sf::Event::Closed:
@@ -357,6 +361,17 @@ void Game::handleInput()
 	}
 }
 void Game::update(float dt) {
+	ImGui::SFML::Update(window, sf::seconds(dt));
+
+	auto& io = ImGui::GetIO();
+
+	ImGui::SetNextWindowPos(ImVec2(20, 200), ImGuiCond_Once);
+	ImGui::Begin("Settings", (bool*)0, ImGuiWindowFlags_AlwaysAutoResize);
+	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+	ImGui::SliderFloat("Gravity", &world_physics.gravity.y, 0.0, 1000.0f, "%.2f");
+	ImGui::SliderFloat("Jump Height", &player.jumpHeight, 0.0, 1000.0f, "%.2f");
+	ImGui::SliderInt("Bounce Height", &lvl.getLevel()->bounce_velocity, 0.0, 1000);
+	ImGui::End();
 
 	switch (state)
 	{
@@ -535,6 +550,7 @@ void Game::render() {
 	{
 		window.clear();
 		currentMenu->draw(window, lvl, main_camera, bgMain, player);
+		ImGui::SFML::Render(window);
 		window.display();
 		break;
 	}
@@ -589,6 +605,7 @@ void Game::render() {
 			center.y -= 50;
 			main_camera.setCenter(center);
 			window.setView(main_camera);
+			ImGui::SFML::Render(window);
 			window.display();
 
 		}
