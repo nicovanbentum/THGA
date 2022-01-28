@@ -23,19 +23,10 @@
 /// \brief-a class that holds the functionality to use a menu ingame
 /// \details
 /// This class serves as way to easily acces a menu ingame and give the player a way to pause the game and make the necessary changes.
-#define numberOfTiles 5
 
 class mainMenu : public Menu
 {
 private:
-	/// \brief width of menu
-	/// \detail
-	/// width of menu
-	float width;
-	/// \brief heigth of menu
-	/// \detail
-	/// heigth of menu
-	float heigth;
 	/// \brief font of characters
 	/// \detail
 	/// font of characters of the menu
@@ -43,13 +34,13 @@ private:
 	/// \brief amount of tiles
 	/// \detail
 	/// amount of tiles that the menu can show
-	sf::Text menuChoices[numberOfTiles];
+	std::vector<sf::Text> menuChoices;
 	
 public:
 	/// \brief default constructor
 	/// \detail
 	/// default constructor that makes the menu when the game starts
-	mainMenu(float width, float heigth, Character &player);
+	mainMenu(Character &player);
 	/// \brief draw function for menu
 	/// \detail
 	/// implementation to draw the menu when ingame

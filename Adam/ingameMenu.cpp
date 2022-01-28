@@ -1,12 +1,12 @@
 #include "pch.h"
 #include "ingameMenu.hpp"
 
-inGameMenu::inGameMenu(float width, float heigth, Character &player) :
+inGameMenu::inGameMenu(Character &player) :
 	player(player)
 {
 	if (!font.loadFromFile("fonts/stranger.ttf"))
 	{
-		std::cout << "error loading font" << std::endl;
+		std::cout << "error loading font" << '\n';
 	}
 	
 	pauseScreen[0].setString("Continue Game");
@@ -78,7 +78,7 @@ int inGameMenu::chooseTile(std::shared_ptr<Menu> & currentMenu, Character & play
 	else if (selectedItem == 1) {
 	}
 	else if (selectedItem == 2) {
-		currentMenu = std::make_shared<mainMenu>(window.getSize().x, window.getSize().y, player);
+		currentMenu = std::make_shared<mainMenu>(player);
 		setMain();
 	}
 	else if (selectedItem == 3) {

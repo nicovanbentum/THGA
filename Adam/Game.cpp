@@ -38,7 +38,7 @@ Game::Game(sf::RenderWindow &w, Character &player, HUD &hud, AnimationManager & 
 	cursor.setTexture(mouse_texture);
 	cursor.setScale(sf::Vector2f(0.03f,0.03f));
 
-	currentMenu = std::make_shared<mainMenu>(window.getSize().x, window.getSize().y, player);
+	currentMenu = std::make_shared<mainMenu>(player);
 
 	ai = std::make_shared<AI>();
 
@@ -138,7 +138,7 @@ void Game::handleInput()
 				case sf::Keyboard::BackSpace:
 				{
 					geluidje.playSoundTwo("menuReturn", 40);
-					currentMenu = std::make_shared<mainMenu>(window.getSize().x, window.getSize().y, player);
+					currentMenu = std::make_shared<mainMenu>(player);
 					break;
 				}
 				}
@@ -218,7 +218,7 @@ void Game::handleInput()
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
 		{
 			state = STATE::MENU;
-			currentMenu = std::make_shared<inGameMenu>(window.getSize().x, window.getSize().y, player);
+			currentMenu = std::make_shared<inGameMenu>(player);
 		}
 
 

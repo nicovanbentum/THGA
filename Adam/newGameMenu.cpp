@@ -1,11 +1,11 @@
 #include "pch.h"
 #include "newGameMenu.hpp"
 
-newGameMenu::newGameMenu(float width, float heigth, Character & player)
+newGameMenu::newGameMenu(Character & player)
 {
 	if (!font.loadFromFile("fonts/stranger.ttf"))
 	{
-		std::cout << "error loading font" << std::endl;
+		std::cout << "error loading font" << '\n';
 	}
 
 	menuChoices[0].setString("What class do you want to play?");

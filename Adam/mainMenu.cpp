@@ -2,26 +2,31 @@
 #include "mainMenu.hpp"
 #include "newGameMenu.hpp"
 
-mainMenu::mainMenu(float width, float heigth, Character &player)
+mainMenu::mainMenu(Character &player)
 
 {
 	if (!font.loadFromFile("fonts/stranger.ttf"))
 	{
-		std::cout << "error loading font" << std::endl;
+		std::cout << "error loading font" << '\n';
 	}
 
-	menuChoices[0].setString("New Game");
-	menuChoices[1].setString("Continue Game");
-	menuChoices[2].setString("Load Game");
-	menuChoices[3].setString("Options");
-	menuChoices[4].setString("Quit Game");
+	menuChoices.emplace_back().setString("New Game");
+	menuChoices.emplace_back().setString("Continue Game");
+	menuChoices.emplace_back().setString("Load Game");
+	menuChoices.emplace_back().setString("Options");
+	menuChoices.emplace_back().setString("Quit Game");
 
-	for (int i = 0; i < numberOfTiles; i++) {
-		menuChoices[i].setFont(font);
-		menuChoices[i].setCharacterSize(160);
-		menuChoices[i].setFillColor(sf::Color::White);
-		menuChoices[i].setPosition(sf::Vector2f((player.getPosition().x) - 200, (player.getPosition().y) + 160 * (i - 2) - 120));
+	int pos = 0;
+
+	for (auto& choice : menuChoices) {
+		choice.setFont(font);
+		choice.setCharacterSize(160);
+		choice.setFillColor(sf::Color::White);
+		choice.setPosition(sf::Vector2f((player.getPosition().x) - 200, player.getPosition().y + 160 * (pos - 2) - 120));
+
+		pos++;
 	}
+
 	menuChoices[0].setFillColor(sf::Color::Red);
 
 	selectedItem = 0;
@@ -35,10 +40,10 @@ void mainMenu::draw(sf::RenderWindow & window, sf::View & main_camera, sf::Sprit
 	bgMain.setPosition(sf::Vector2f(playerposforbg.x - 960, playerposforbg.y - 540));
 	window.draw(bgMain);
 
-	for (unsigned int i = 0; i < numberOfTiles; i++)
-	{
-		window.draw(menuChoices[i]);
+	for (auto& choice : menuChoices) {
+		window.draw(choice);
 	}
+
 	window.setView(main_camera);
 }
 
@@ -51,14 +56,14 @@ void mainMenu::moveUp()
 	}
 	else
 	{
-		selectedItem = numberOfTiles - 1 ;
+		selectedItem = menuChoices.size() - 1 ;
 	}
 	menuChoices[selectedItem].setFillColor(sf::Color::Red);
 }
 void mainMenu::moveDown()
 {
 	menuChoices[selectedItem].setFillColor(sf::Color::White);
-	if (selectedItem + 1 < numberOfTiles)
+	if (selectedItem + 1 < menuChoices.size())
 	{
 		
 		selectedItem++;
@@ -74,12 +79,12 @@ void mainMenu::moveDown()
 int mainMenu::chooseTile(std::shared_ptr<Menu> &currentMenu, Character & player, sf::Window & window, AnimationManager & ani)
 {
 	if (selectedItem == 0) {
-		currentMenu = std::make_shared<newGameMenu>(window.getSize().x, window.getSize().y, player);
+		currentMenu = std::make_shared<newGameMenu>(player);
 		setNewGame();
 	}
 	else if (selectedItem == 1) {
 		if (player.role == std::string("")) {
-			currentMenu = std::make_shared<newGameMenu>(window.getSize().x, window.getSize().y, player);
+			currentMenu = std::make_shared<newGameMenu>(player);
 			setNewGame();
 		}
 		else {
