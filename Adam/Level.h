@@ -28,7 +28,7 @@ private:
 	/// \brief stores the spawn point for the player for this level
 	sf::Vector2f player_spawn_point = {};
 	/// \brief a map containing the different layers to be drawn/used for this level
-	std::unordered_map<std::string, std::pair<sf::Sprite, sf::Texture>> sprites;
+	std::unordered_map<std::string, std::pair<sf::Sprite, std::shared_ptr<sf::Texture>>> sprites;
 	/// \brief the name of the next level to be able to go there once this level is finished.
 	std::string next_level_name;
 public:

@@ -19,7 +19,7 @@ public:
 
 	/// \brief
 	/// default constructor
-	projectile() {}
+	projectile() { bCanCollide = false; }
 
 	/// \brief
 	/// constructs a projectile
@@ -33,12 +33,6 @@ public:
 	/// \details
 	/// takes a string and sets the impact name used for the impact animation
 	void setImpactName(const std::string & name);
-
-	/// \brief
-	/// moves the projectile
-	/// \details
-	/// first calls the movDeco lambda and then movable::move()
-	void move();
 
 	/// \brief
 	/// sets the velocity

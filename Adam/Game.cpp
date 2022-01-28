@@ -313,7 +313,7 @@ void Game::handleInput()
 				if (player.getCurrentAnimation() != std::string("IDLEright"))
 				{
 					player.setAnimation("IDLEright", Animation::intervals::idle);
-					player.setTexture(player.currentAnimation.nextFrame());
+					player.setTexture(player.currentAnimation->nextFrame());
 				}
 				break;
 			}
@@ -322,7 +322,7 @@ void Game::handleInput()
 				if (player.getCurrentAnimation() != std::string("SLASHINGright"))
 				{
 					player.setAnimation("SLASHINGright", Animation::intervals::attack);
-					player.setTexture(player.currentAnimation.nextFrame());
+					player.setTexture(player.currentAnimation->nextFrame());
 				}
 				break;
 			}
@@ -331,7 +331,7 @@ void Game::handleInput()
 				if (player.getCurrentAnimation() != std::string("WALKright"))
 				{
 					player.setAnimation("WALKright", Animation::intervals::walk);
-					player.setTexture(player.currentAnimation.nextFrame());
+					player.setTexture(player.currentAnimation->nextFrame());
 				}
 				break;
 			}
@@ -340,7 +340,7 @@ void Game::handleInput()
 				if (player.getCurrentAnimation() != std::string("DYINGright"))
 				{
 					player.setAnimation("DYINGright", Animation::intervals::dying);
-					player.setTexture(player.currentAnimation.nextFrame());
+					player.setTexture(player.currentAnimation->nextFrame());
 				}
 				break;
 			}
@@ -380,24 +380,24 @@ void Game::update() {
 
 			if (np.updateAnimation())
 			{
-				np.setTexture(np.currentAnimation.getCurrentFrame());
+				np.setTexture(np.currentAnimation->getCurrentFrame());
 			}
 		}
 
 		if (player.updateAnimation() && player.canJump)
 		{
-			player.setTexture(player.currentAnimation.getCurrentFrame());
+			player.setTexture(player.currentAnimation->getCurrentFrame());
 		}
 
 		for (auto & enemy : enemies) {
 			if (!enemy.checkDead()) {
 				if (enemy.updateAnimation())
 				{
-					enemy.setTexture(enemy.currentAnimation.getCurrentFrame());
+					enemy.setTexture(enemy.currentAnimation->getCurrentFrame());
 				}
 			}
 			else {
-				enemy.setTexture(enemy.currentAnimation.getLastFrame());
+				enemy.setTexture(enemy.currentAnimation->getLastFrame());
 			}
 		}
 
@@ -435,12 +435,12 @@ void Game::update() {
 						geluidje.playSound("monsterDeath", 40);
 					}
 				}
-				if (Collision::PixelPerfectTest(lvl.getLevel()->getLayer("foreground"), prj->operator sf::Sprite() )) {
+				if (Collision::PixelPerfectTest(lvl.getLevel()->getLayer("foreground"), *prj)) {
 					prj->updateLive(50);
 				}
-				prj->setTexture(prj->currentAnimation.nextFrame());
-				prj->move();
-				
+
+				prj->updateAnimation();
+				prj->setTexture(prj->currentAnimation->getCurrentFrame());
 			}
 			
 		}
@@ -550,8 +550,8 @@ void Game::render() {
 				}
 				
 				if (prj->isDeath() && !prj->currentAnimationIsDone()) {
-					
-					prj->setTexture(prj->currentAnimation.nextFrame());
+
+					prj->setTexture(prj->currentAnimation->nextFrame());
 					prj->draw(window);
 				}
 			}

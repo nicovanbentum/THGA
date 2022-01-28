@@ -3,13 +3,16 @@
 #include "SFML/Graphics.hpp"
 #include "SFML/Audio.hpp"
 
-#include "Windows.h"
+#include "imgui.h"
+#include "imgui-SFML.h"
 
-#include <stdlib.h>
 #include <string>
 #include <iostream>
+#include <sstream>
 #include <fstream>
 #include <thread>
+#include <future>
+#include <queue>
 
 #include <functional>
 #include <algorithm>

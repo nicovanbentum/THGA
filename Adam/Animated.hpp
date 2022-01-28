@@ -21,7 +21,7 @@ protected:
 	/// \brief Container for the animations
 	/// \detail
 	/// Access the animations by their key, which is the name of the animation, in example: "WALKright" will give you the corresponding animation.
-	std::shared_ptr<std::map<std::string, Animation>> animations;
+	std::map<std::string, Animation>* animations;
 public:
 
 	/// \brief
@@ -43,7 +43,7 @@ public:
 	/// \brief The current animation of the animateable object.
 	/// \detail
 	/// This is the animation on which the functions are being executed.
-	Animation currentAnimation;
+	Animation* currentAnimation;
 	/// \brief The interval at which the frames of the animation should change. 
 	/// \detail
 	/// This value can be gotten from Animation::intervals, which only holds integer values. 
@@ -61,14 +61,12 @@ public:
 	void setAnimationMap(std::map<std::string, Animation> &newAnimations);
 
 	/// \brief Default constructor - doesn't do anything
-	Animateable() {}
-	/// \brife Default destructor - doesn't do anything
-	~Animateable() {}
+	Animateable() = default;
 	/// \brief Constructor which also sets the animation map for the object instance.
 	Animateable(std::map<std::string, Animation> &animations);
 	
 	/// \brief returns the animation within the map by name.
-	Animation getAnimation(std::string animation);
+	Animation* getAnimation(std::string animation);
 
 	/// \brief returns a string containing the name for the current animation
 	/// \detail
@@ -82,6 +80,6 @@ public:
 	bool updateAnimation();
 
 	/// \brief returns whether the currently playing animation is done playing, aka if all the frames have been used.
-	bool currentAnimationIsDone() { return currentAnimation.isDone(); }
+	bool currentAnimationIsDone() { return currentAnimation->isDone(); }
 };
 

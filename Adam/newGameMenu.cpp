@@ -83,16 +83,16 @@ int newGameMenu::chooseTile(std::shared_ptr<Menu> & currentMenu, Character & pla
 	else if (selectedItem == 1) {
 		player.setAnimationMap(ani.animations["knight"]);
 		player.setAnimation("IDLEright", Animation::intervals::idle);
-		player.setTexture(player.currentAnimation.nextFrame());
-		player.setTexture(player.currentAnimation.nextFrame());
+		player.setTexture(player.currentAnimation->nextFrame());
+		player.setTexture(player.currentAnimation->nextFrame());
 		player.role = "knight";
-		player.setProjectile([&](sf::Vector2f pos1, sf::Vector2f pos2, std::map<std::string, Animation> animations) 
+		player.setProjectile([&](sf::Vector2f pos1, sf::Vector2f pos2, std::map<std::string, Animation>* animations) 
 		{
 			sf::Vector2f direction(pos2.x - pos1.x, pos2.y - pos1.y);
 			direction.y = (direction.y * 5) / direction.x;
 			direction.x = 5;
-			std::shared_ptr<projectile> prj = std::make_shared<projectile>(projectile(pos1, sf::Vector2f(0.2, 0.2), animations, direction, 10.0));
-			prj->setAnimation("AXEright", Animation::intervals::idle);
+			std::shared_ptr<projectile> prj = std::make_shared<projectile>(projectile(pos1, sf::Vector2f(0.2, 0.2), *animations, direction, 10.0));
+			prj->setAnimation("AXEright", 1000);
 			prj->setImpactName("AXEimpact");
 			prj->animation_name = "AXEright";
 			return prj;
@@ -107,17 +107,17 @@ int newGameMenu::chooseTile(std::shared_ptr<Menu> & currentMenu, Character & pla
 	else if (selectedItem == 2) {
 		player.setAnimationMap(ani.animations["mage"]);
 		player.setAnimation("IDLEright", Animation::intervals::idle);
-		player.setTexture(player.currentAnimation.nextFrame());
+		player.setTexture(player.currentAnimation->nextFrame());
 		player.role = "mage";
 		player.lvl = 1;
 		player.exp.zero();
 		player.setProjectile(
-			[&](sf::Vector2f pos1, sf::Vector2f pos2, std::map<std::string, Animation> animations) 
+			[&](sf::Vector2f pos1, sf::Vector2f pos2, std::map<std::string, Animation>* animations) 
 		{
 			sf::Vector2f direction(pos2.x - pos1.x, pos2.y - pos1.y);
 			direction.y = (direction.y * 5) / direction.x;
 			direction.x = 5;
-			std::shared_ptr<projectile> prj = std::make_shared<projectile>(projectile(pos1, sf::Vector2f(1.0, 1.0), animations, direction, 10.0));
+			std::shared_ptr<projectile> prj = std::make_shared<projectile>(projectile(pos1, sf::Vector2f(1.0, 1.0), *animations, direction, 10.0));
 			prj->setAnimation("FIREBALLright", Animation::intervals::idle);
 			prj->setImpactName("FIREBALLimpact");
 			prj->animation_name = "FIREBALLright";

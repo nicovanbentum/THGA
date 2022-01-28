@@ -7,7 +7,7 @@ Audio::Audio(const std::string &filePath)
 	std::ifstream soundFile(filePath, std::ios::in | std::ios::binary);
 	if(!soundFile)
 	{
-		std::cout << "ERROR: SoundFile couldn't be opened!" << std::endl;
+		std::cout << "ERROR: SoundFile couldn't be opened!\n";
 	}
 	std::string factorySound, path = "";
 	while (soundFile >> factorySound >> path)
@@ -16,7 +16,7 @@ Audio::Audio(const std::string &filePath)
 		sf::Sound s;
 		if (!b.loadFromFile(path))
 		{
-			std::cout << path << "Audio File Buffer error" << std::endl;
+			std::cout << path << "Audio File Buffer error\n";
 		}
 		s.setBuffer(b);
 		if (soundCollection.count(factorySound))
@@ -44,7 +44,7 @@ void Audio::playSound(const std::string &key, const float volume)
 		{
 		int random = rand() % (soundCollection[key].size() - 1);
 		sound.setBuffer(soundCollection[key][random]);
-		std::cout << key << ' ' << random << ' ' << std::endl;
+		std::cout << key << ' ' << random << ' ' << '\n';
 		}
 		sound.setVolume(volume);
 		sound.play();
@@ -87,7 +87,7 @@ void Audio::playMusic(const std::string& song,const float volume)
 
 	if (!music.openFromFile(song))
 	{
-		std::cout<< "song not LOADED ERROR" << std::endl;
+		std::cout<< "song not LOADED ERROR \n";
 	}
 	if (music.getStatus() != sf::SoundSource::Status::Playing)
 	{

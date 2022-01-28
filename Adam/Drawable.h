@@ -1,9 +1,6 @@
 #pragma once
 #include "Collision.h"
 
-//sf::Texture AABB.load);
-//AABB.loadFromFile("assets/AABB.png")
-
 ///@file
 
 /// \brief
@@ -15,27 +12,28 @@ class drawable {
 protected:
 	sf::Sprite sprite;
 	sf::Vector2f position;
-	sf::Texture texture;
+	std::shared_ptr<sf::Texture> texture;
 	sf::Vector2f scale;
 	
 public:
-	sf::Texture AABB;
-	sf::Texture HB;
+	std::shared_ptr<sf::Texture> AABB;
+	std::shared_ptr<sf::Texture> HB;
 
 	/// \details
 	/// default class constructor, only loads the AABB hitbox texture from disk.
-	drawable() {
-		AABB.loadFromFile("assets/AABB.png");
-		HB.loadFromFile("assets/AABB_H.png");
+	drawable() :
+		AABB(std::make_shared<sf::Texture>()),
+		HB(std::make_shared<sf::Texture>())
+	{
+		Collision::CreateTextureAndBitmask(AABB, "assets/AABB.png");
+		Collision::CreateTextureAndBitmask(HB, "assets/AABB_H.png");
 	}
 
 	/// \brief
 	/// constructs an drawable
 	/// \details
 	/// class constructor that sets the position, scale and texture.
-	drawable(sf::Vector2f &position, sf::Vector2f &scale, sf::Texture &texture);
-
-	~drawable() {}
+	drawable(sf::Vector2f position, sf::Vector2f scale, std::shared_ptr<sf::Texture> texture);
 
 	/// \brief
 	/// returns the position
@@ -60,6 +58,7 @@ public:
 	/// \details
 	/// Takes an lvalue texture and loads it on the sprite.
 	void setTexture(sf::Texture & t);
+	void setTexture(std::shared_ptr<sf::Texture> t);
 
 	/// \brief
 	/// Draws the sprite
@@ -75,7 +74,7 @@ public:
 	virtual sf::Sprite getBox() {
 		auto temp = sf::Sprite();
 		temp.setPosition(position);
-		temp.setTexture(AABB);
+		temp.setTexture(*AABB);
 		temp.setScale(scale);
 		return temp;
 	}
@@ -87,9 +86,9 @@ public:
 	virtual sf::Sprite getHitbox()
 	{
 		auto tmp = sf::Sprite();
-		tmp.setTexture(HB);
+		tmp.setTexture(*HB);
 		if (sprite.getScale().x < 0) 
-			tmp.setPosition(sf::Vector2f(position.x - (texture.getSize().x * sprite.getScale().x), position.y));
+			tmp.setPosition(sf::Vector2f(position.x - (texture->getSize().x * sprite.getScale().x), position.y));
 		else
 			tmp.setPosition(position);
 		tmp.setScale(sprite.getScale());
@@ -118,7 +117,7 @@ public:
 	/// return the size of a drawable witch is actualy the size of the texture
 	sf::Vector2u getSize()
 	{
-		return texture.getSize();
+		return texture->getSize();
 	}
 
 	/// \brief

@@ -6,9 +6,9 @@
 class shooter
 {
 protected:
-	std::function<std::shared_ptr<projectile>(sf::Vector2f, sf::Vector2f, std::map<std::string, Animation> a)> shoot = [&](sf::Vector2f pos1, sf::Vector2f pos2, std::map<std::string, Animation> animations) {return std::make_shared<projectile>(projectile());};
+	std::function<std::shared_ptr<projectile>(sf::Vector2f, sf::Vector2f, std::map<std::string, Animation>* a)> shoot = [&](sf::Vector2f pos1, sf::Vector2f pos2, std::map<std::string, Animation>* animations) {return std::make_shared<projectile>(projectile());};
 	int size = 1;
-	std::map<std::string, Animation> projectileAnimations;
+	std::map<std::string, Animation>* projectileAnimations;
 public:
 	std::vector<std::shared_ptr<projectile>> projectiles;
 
@@ -33,7 +33,7 @@ public:
 	/// \details
 	/// it sets a new construction lambda in a very wierd way
 	/// it creates a new projectile for every projectile in the vector
-	void setProjectile(std::function<std::shared_ptr<projectile>(sf::Vector2f, sf::Vector2f, std::map<std::string, Animation>)> newS, std::map<std::string, Animation> & animations);
+	void setProjectile(std::function<std::shared_ptr<projectile>(sf::Vector2f, sf::Vector2f, std::map<std::string, Animation>*)> newS, std::map<std::string, Animation> & animations);
 
 	/// \brief
 	/// sets a new veloDeco
@@ -46,7 +46,5 @@ public:
 	/// \details
 	/// sets a new movDeco lambda for every projectile in the vector
 	void setMovDeco(std::function<void(sf::Vector2f&)> NmovDeco);
-
-	~shooter();
 };
 

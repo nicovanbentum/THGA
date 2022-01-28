@@ -3,20 +3,20 @@
 
 Animateable::Animateable(std::map<std::string, Animation> &animations):
 
-	animations(std::make_shared<std::map<std::string, Animation>>(animations))
+	animations(&animations)
 {
-	currentAnimation = animations.begin()->second;
+	currentAnimation = &animations.begin()->second;
 }
 
-Animation Animateable::getAnimation(std::string animation) {
-	return (*animations)[animation];
+Animation* Animateable::getAnimation(std::string animation) {
+	return &(*animations)[animation];
 }
 
 bool Animateable::updateAnimation()
 {
 	if (timer.getElapsedTime().asMilliseconds() > animation_interval)
 	{
-		currentAnimation.nextFrame();
+		currentAnimation->nextFrame();
 		timer.restart();
 		return true;
 	}
@@ -25,16 +25,16 @@ bool Animateable::updateAnimation()
 }
 
 std::string Animateable::getCurrentAnimation() {
-	return currentAnimation.name;
+	return currentAnimation->name;
 }
 
 void Animateable::setAnimation(std::string animation, int interval) {
 	animation_interval = interval;
-	currentAnimation = (*animations)[animation];
-	currentAnimation.reset_animation();
+	currentAnimation = &(*animations)[animation];
+	currentAnimation->reset_animation();
 }
 
 void Animateable::setAnimationMap(std::map<std::string, Animation> & newAnimations)
 {
-	animations = std::make_shared<std::map<std::string, Animation>>(newAnimations);
+	animations = &newAnimations;
 }

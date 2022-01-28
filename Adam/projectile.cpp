@@ -8,6 +8,7 @@ projectile::projectile(sf::Vector2f &position, sf::Vector2f scale, std::map<std:
 	dmg(dmg)
 {
 	death = true;
+	bCanCollide = false;
 }
 
 void projectile::setImpactName(const std::string & name)
@@ -35,6 +36,7 @@ void projectile::updateLive(int minus){
 		if(getCurrentAnimation() != impact_name) {
 			setAnimation(impact_name, Animation::intervals::dying);
 		}
+
 		death = true;
 	}
 }
@@ -83,12 +85,8 @@ void projectile::die()
 	if (getCurrentAnimation() != impact_name) {
 		setAnimation(impact_name, Animation::intervals::dying);
 	}
-	death = true;
-}
 
-void projectile::move() {
-	movDeco(velocity);
-	movable::move();
+	death = true;
 }
 
 void projectile::setVelocity(sf::Vector2f newVel) {

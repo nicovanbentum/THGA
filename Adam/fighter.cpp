@@ -7,7 +7,7 @@ fighter::fighter(statistic health_c, int lvl_c)
 {
 	health = health_c;
 	lvl = lvl_c;
-	AABB_H.loadFromFile("assets/AABB_H.png");
+	Collision::CreateTextureAndBitmask(AABB_H, "assets/AABB_H.png");
 }
 
 bool fighter::fight(fighter * opponent, Audio & sound) {

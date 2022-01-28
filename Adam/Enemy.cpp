@@ -54,8 +54,8 @@ bool Enemy::fight(fighter * opponent, Audio & sound) {
 		if (fighter::fight(opponent, sound)) {
 			if (getCurrentAnimation() != std::string("SLASHINGright")) {
 				setAnimation("SLASHINGright", Animation::intervals::attack);
-				std::cout << getCurrentAnimation() << std::endl;
-				setTexture(currentAnimation.nextFrame());
+				std::cout << getCurrentAnimation() << '\n';
+				setTexture(*currentAnimation->nextFrame());
 
 			}
 			if (fighter::checkDead()) {
@@ -109,11 +109,11 @@ void Enemy::die()
 	state = STATE::DEAD;
 	if (getCurrentAnimation() != std::string("DYINGright")) {
 		setAnimation("DYINGright", Animation::intervals::dying);
-		setTexture(currentAnimation.nextFrame());
+		setTexture(*currentAnimation->nextFrame());
 	}
 	else {
 		if (currentAnimationIsDone()) {
-			setTexture(currentAnimation.textures.back());
+			setTexture(*currentAnimation->textures.back());
 		}
 	}
 	health.zero();

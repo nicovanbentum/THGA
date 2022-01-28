@@ -2,7 +2,7 @@
 #include "Movable.h"
 
 
-movable::movable(sf::Vector2f &position, sf::Vector2f & scale, sf::Texture & texture, sf::Vector2f & velocity):
+movable::movable(const sf::Vector2f &position, const sf::Vector2f & scale, std::shared_ptr<sf::Texture> texture, const sf::Vector2f & velocity):
 	drawable(position, scale, texture),
 	velocity(velocity)
 {
@@ -27,7 +27,7 @@ void movable::move() {
 void movable::setScale(sf::Vector2f scale)
 {
 	if (scale.x < 0) {
-		sprite.setOrigin(texture.getSize().x, 0);
+		sprite.setOrigin(texture->getSize().x, 0);
 	}
 	else {
 		sprite.setOrigin(sf::Vector2f(0, 0));

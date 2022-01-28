@@ -66,7 +66,7 @@ public:
 	/// Once the animation is done, we "actually" die, and respawn.
 	void die();
 	/// \brief construct a character. 
-	Character(sf::Vector2f position, sf::Vector2f scale, std::map<std::string, Animation> animations, sf::Vector2f velocity, int prjSize, statistic mana_c = statistic(100, 100), statistic health_c = statistic(100, 100), statistic exp_c = statistic(0, 100));
+	Character(sf::Vector2f position, sf::Vector2f scale, std::map<std::string, Animation>& animations, sf::Vector2f velocity, int prjSize, statistic mana_c = statistic(100, 100), statistic health_c = statistic(100, 100), statistic exp_c = statistic(0, 100));
 	/// \brief default destructor.
 	~Character();
 };

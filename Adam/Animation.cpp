@@ -1,9 +1,5 @@
 #include "pch.h"
 #include "Animation.h"
-#include <iostream>
-Animation::~Animation()
-{
-}
 
 void Animation::addFrame(const std::string & location)
 {
@@ -17,21 +13,22 @@ void Animation::addFrame(sf::Texture & texture)
 	textures.emplace_back(texture);
 }
 
-sf::Texture & Animation::nextFrame()
+std::shared_ptr<sf::Texture> Animation::nextFrame()
 {
-	if (current_frame == textures.size() -1) {
-		current_frame = -1;
-		animation_done = true;
-	}
-	if (animation_done && name == "DYINGright") {
+	const auto last_frame = textures.size() - 1;
+
+	if (current_frame == last_frame && name == "DYINGright") {
 		return textures.back();
 	}
-	return textures[++current_frame];
+
+	current_frame = (current_frame + 1) % textures.size();
+
+	return textures[current_frame];
 }
 
-sf::Texture & Animation::getCurrentFrame()
+std::shared_ptr<sf::Texture> Animation::getCurrentFrame()
 {
-	if (animation_done && name == "DYINGright") {
+	if (isDone() && name == "DYINGright") {
 		return textures.back();
 	}
 	if (current_frame == textures.size()) {
@@ -42,7 +39,7 @@ sf::Texture & Animation::getCurrentFrame()
 	}
 }
 
-sf::Texture & Animation::getLastFrame()
+std::shared_ptr<sf::Texture> Animation::getLastFrame()
 {
 	return textures.back();
 }
@@ -50,8 +47,7 @@ sf::Texture & Animation::getLastFrame()
 
 void Animation::reset_animation()
 {
-	animation_done = false;
-	current_frame = -1;
+	current_frame = 0;
 }
 void Animation::print() {
 	std::cout << name << " ";

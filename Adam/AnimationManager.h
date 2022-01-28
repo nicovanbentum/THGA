@@ -21,6 +21,7 @@ public:
 	/// i.e.: animations["mage"]["IDLEright"] which will return the actual idle animation for the mage object
 	/// or i.e.: animations["mage"] which will return the map of all animation for that object.
 	std::map<std::string, std::map<std::string, Animation>> animations;
+
 	/// \brief Factory constructor
 	/// \detail
 	/// Gets the path to a text file as inout (s) and will then use the factory pattern to construct the map of animations.
@@ -29,6 +30,4 @@ public:
 	AnimationManager() {}
 	/// \brief prints the animation object's name, the animation name and the amount of frames for that animation (debugging)
 	void print();
-	/// \brief default destructor - doesn't do anything.
-	~AnimationManager();
 };

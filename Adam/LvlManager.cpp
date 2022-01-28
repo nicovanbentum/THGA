@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "LvlManager.h"
 
-LvlManager::LvlManager(AnimationManager & a) : ani(a)
+LvlManager::LvlManager(AnimationManager & animationManager) : ani(animationManager)
 {
 
 	std::ifstream lvls_file("assets/backgrounds/lvls.txt");
@@ -15,13 +15,14 @@ LvlManager::LvlManager(AnimationManager & a) : ani(a)
 				levels[level_name] = Level();
 			}
 			if (level_part == std::string("npcs")) {
-				levels[level_name].npc_factory(location, a);
+				levels[level_name].npc_factory(location, animationManager);
 			}
 			else if (level_part == std::string("enemies")) {
-				levels[level_name].enemy_factory(location, a);
+				levels[level_name].enemy_factory(location, animationManager);
 			}
 			else if (level_part == std::string("spawnpoint_player")) {
 				sf::Vector2f temp = to_vector(location);
+			
 				levels[level_name].set_player_spawn_point(temp);
 			}
 			else if (level_part == std::string("next_level")) {

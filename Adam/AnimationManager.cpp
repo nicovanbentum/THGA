@@ -1,12 +1,13 @@
 #include "pch.h"
 #include "AnimationManager.h"
+#include "Animation.h"
 
 
 AnimationManager::AnimationManager(const std::string & s)
 {
 	std::ifstream in(s, std::ios::in | std::ios::binary);
 	if (!in) {
-		std::cout << "Couldn't open " << s << std::endl;
+		std::cout << "Couldn't open " << s << '\n';
 	}
 	std::string object, action, path = "";
 	while (in >> object >> action >> path) {
@@ -29,15 +30,11 @@ AnimationManager::AnimationManager(const std::string & s)
 
 void AnimationManager::print()
 {
-	for (auto elem : animations)
+	for (const auto& elem : animations)
 	{
-		for (auto m : elem.second) {
-			std::cout << elem.first << " " << m.first << " " << m.second.textures.size() << std::endl;
+		for (const auto& m : elem.second) {
+			std::cout << elem.first << " " << m.first << " " << m.second.textures.size() << '\n';
 		}
 		
 	}
-}
-
-AnimationManager::~AnimationManager()
-{
 }

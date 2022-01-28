@@ -28,7 +28,7 @@ public:
 	/// constructs a movable
 	/// \details
 	/// class constructor that sets the velocity and calls 
-	movable(sf::Vector2f &position, sf::Vector2f &scale, sf::Texture &texture, sf::Vector2f &velocity);
+	movable(const sf::Vector2f &position, const sf::Vector2f &scale, std::shared_ptr<sf::Texture>, const sf::Vector2f &velocity);
 
 	movable() {}
 
