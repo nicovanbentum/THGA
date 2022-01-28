@@ -89,17 +89,19 @@ int main()
 
 	t.join(); //wait for objects to finish constructing before moving on
 
+	sf::Clock clock;
+
 	while (window.isOpen())
 	{
-		if (window.hasFocus()) game.object.handleInput();
-		else 
-		{
+		if (window.hasFocus()) {
+			game->handleInput();
+		} else {
 			sf::Event ev;
 			while (window.pollEvent(ev)) {}
 		}
-		game.object.update();
-		game.object.render();
 
+		game->update(clock.restart().asSeconds());
+		game->render();
 	}
 
 	return 0;
