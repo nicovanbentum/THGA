@@ -10,22 +10,34 @@ AnimationManager::AnimationManager(const std::string & s)
 		std::cout << "Couldn't open " << s << '\n';
 	}
 	std::string object, action, path = "";
-	while (in >> object >> action >> path) {
-		Animation a(action);
-		auto pos = animations.find(object);
-		if (pos != animations.end()) {
-			auto pos2 = pos->second.find(action);
-			if (pos2 != pos->second.end()) {
-				a = pos2->second;
-			}
-			else {
-				pos->second[action] = a;
-			}	
-		}else{
-			animations[object][action] = a;
-		}
-		animations[object][action].addFrame("assets/" + path);
+
+	sf::Clock timer;
+
+	std::string line;
+	std::vector<std::string> lines;
+
+	while (std::getline(in, line)) {
+		lines.push_back(line);
 	}
+
+	std::vector<std::future<void>> futures;
+
+	for(const auto& line : lines) {
+		auto ss = std::stringstream(line);
+		ss >> object >> action >> path;
+
+		animations.try_emplace(object);
+		animations[object].try_emplace(action, action);
+		futures.push_back(animations[object][action].addFrame("assets/" + path));
+
+		std::cout << "assets/" << path << '\n';
+	}
+	
+	for (const auto& future : futures) {
+		future.wait();
+	}
+
+	std::cout << "AnimationManager took " << timer.getElapsedTime().asMilliseconds() << " ms." << '\n';
 }
 
 void AnimationManager::print()
