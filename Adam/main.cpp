@@ -11,26 +11,8 @@
 using namespace std;
 using namespace sf;
 
-//"trick" struct to declare objects without calling constructors
-template<typename T>
-struct deffered
-{
-	deffered() {}
-	~deffered() { object.~T(); }
-	template<typename...TArgs>
-	void construct(TArgs&&...args)
-	{
-		new (&object) T(std::forward<TArgs>(args)...);
-	}
-public:
-	union
-	{
-		T object;
-	};
-};
-
 //renders and displays a rotating loading icon
-void render_loading_screen(sf::RenderWindow & w, bool & loaded)
+void render_loading_screen(sf::RenderWindow & window, bool & loaded)
 {
 	sf::Sprite loader;
 	sf::Sprite background;
@@ -42,45 +24,54 @@ void render_loading_screen(sf::RenderWindow & w, bool & loaded)
 	loader.setTexture(loader_png);
 	background.setTexture(background_texture);
 	loader.setOrigin(sf::Vector2f(loader_png.getSize().x / 2, loader_png.getSize().y / 2));
-	loader.setPosition(sf::Vector2f(w.getSize().x - loader.getTextureRect().width * 0.2, w.getSize().y - loader.getTextureRect().height * 0.2));
+	loader.setPosition(sf::Vector2f(window.getSize().x - loader.getTextureRect().width * 0.2, window.getSize().y - loader.getTextureRect().height * 0.2));
 	loader.setScale(sf::Vector2f(0.2, 0.2));
+
+	sf::FloatRect spriteSize=background.getGlobalBounds();
+	background.setOrigin(spriteSize.width/2.,spriteSize.height/2.);
+
+	sf::Clock clock;
 
 	while (!loaded)
 	{
 		sf::Event e;
-		while (w.pollEvent(e)) {}
-		w.clear();
-		w.draw(background);
-		w.draw(loader);
-		loader.rotate(10);
-		w.display();
+		while (window.pollEvent(e)) {}
+		window.clear();
+		background.setPosition(window.getSize().x/2., window.getSize().y/2.);
+		background.setScale(sf::Vector2f(1.33f, 1.33f));
+		window.draw(background);
+		window.draw(loader);
+		loader.rotate(clock.restart().asSeconds() * 100);
+		window.display();
 	}
 }
 
 int main()
 {
-	RenderWindow window(VideoMode(1920, 1080, 32), "Project: ADAM", sf::Style::None);
+	RenderWindow window(VideoMode(1920, 1080, 32), "Project: ADAM", sf::Style::Titlebar | sf::Style::Close);
 	window.setKeyRepeatEnabled(false);
-	window.setMouseCursorVisible(false);
-	window.setFramerateLimit(61);
+	window.setMouseCursorVisible(true);
+	window.setMouseCursorGrabbed(false);
+	window.setFramerateLimit(0);
+
 	ImGui::SFML::Init(window);
 
 	//declare objects without constructing
-	deffered<AnimationManager> ani;
-	deffered<Audio> geluidje;
-	deffered<Character> player;
-	deffered<HUD> hud;
-	deffered<Game> game;
+
+	std::unique_ptr<AnimationManager> anim;
+	std::unique_ptr<Audio> audio;
+	std::unique_ptr<Character> player;
+	std::unique_ptr<HUD> hud;
+	std::unique_ptr<Game> game;
 
 	//create and launch a thread that calls constructors
 	bool loaded = false;
-	std::thread t([&]() 
-	{
-		ani.construct("assets/animations/animations.txt");
-		geluidje.construct("audio/audio.txt");
-		player.construct(sf::Vector2f(890, 690), sf::Vector2f(0.2, 0.2), ani.object.animations["mage"], sf::Vector2f(0, 0), 5, statistic(200, 200), statistic(300, 300), statistic(80, 0));
-		hud.construct(player.object);
-		game.construct(window, player.object, hud.object, ani.object, geluidje.object);
+	std::thread t([&]() {
+		anim = std::make_unique<AnimationManager>("assets/animations/animations.txt");
+		audio = std::make_unique<Audio>("audio/audio.txt");
+		player = std::make_unique<Character>(sf::Vector2f(890, 690), sf::Vector2f(0.2, 0.2), anim->animations["mage"], sf::Vector2f(0, 0), 5, statistic(200, 200), statistic(300, 300), statistic(80, 0));
+		hud = std::make_unique<HUD>(*player);
+		game = std::make_unique<Game>(window, *player, *hud, *anim, *audio);
 
 		loaded = true;
 	});
