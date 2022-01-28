@@ -22,6 +22,7 @@
 class Character :  public fighter, public Animateable, public movable, public shooter
 {
 public:
+	float jumpHeight = 200.0f;
 	/// \brief container for the mana points of the character
 	statistic mana;
 	/// \brief container for the experience points of the character

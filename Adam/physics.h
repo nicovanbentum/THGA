@@ -21,11 +21,11 @@ namespace Adam
 	public:
 		collision_handler * clh;						//pointer to its' collision_handler
 		std::vector<movable*> moveables;				/*!< Vector of pointers to every movable in the game. */
-		sf::Vector2f gravity = sf::Vector2f(0, 0.5f);		/*!< Fixed gravity vector. */
+		sf::Vector2f gravity = sf::Vector2f(0, 500.0f);		/*!< Fixed gravity vector. */
 
 		/// \brief
 		/// Empty default constructor
-		physics();
+		physics() = default;
 
 		/// \brief
 		/// Physics class constructor
@@ -34,18 +34,14 @@ namespace Adam
 		physics(movable* player, collision_handler & clh_in);
 
 		/// \brief
-		/// Default empty destructor
-		~physics();
-
-		/// \brief
 		/// Applies every movables' x velocity then checks and handles collision cases.
 		/// Overlap fixing is done by moving the sprite back on the collision axis until it's no longer colliding.
-		void step_x_moveables();
+		void step_x_moveables(float dt);
 
 		/// \brief
 		/// Applies every movables' y velocity then checks and handles collision cases.
 		/// Overlap fixing is done by moving the sprite back on the collision axis until it's no longer colliding.
-		void step_y_moveables();
+		void step_y_moveables(float dt);
 	};
 }
 

@@ -31,7 +31,7 @@
 class Game {
 private:
 	sf::RenderWindow & window;
-	bool rerender = false;
+	bool rerender = true;
 
 	std::vector<Enemy> enemies;
 	std::vector<npc> npcs;
@@ -55,6 +55,9 @@ private:
 
 	sf::Clock manaClock;
 	sf::Clock healthClock;
+
+	sf::Clock deltaClock;
+	sf::Clock projectileClock;
 
 	Adam::collision_handler cln_h;
 	Adam::physics world_physics;
@@ -81,7 +84,7 @@ public:
 	/// \detail
 	/// Inputhandling depends on the state (menu or playing)
 	/// Only when the state is Playing, the game will be updated
-	void update();
+	void update(float dt);
 
 	/// \brief Render game
 	/// \detail

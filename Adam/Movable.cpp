@@ -12,7 +12,7 @@ movable::movable(const sf::Vector2f &position, const sf::Vector2f & scale, std::
 void movable::setVelocity(sf::Vector2f newVel) {
 	velocity = newVel;
 }
-sf::Vector2f movable::getVelocity() {
+sf::Vector2f& movable::getVelocity() {
 	return velocity;
 }
 void movable::move(sf::Vector2f direction) {

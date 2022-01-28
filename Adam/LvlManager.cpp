@@ -104,18 +104,20 @@ bool LvlManager::check_interaction(Character & player, Audio & sound) {
 	}
 	if (Collision::PixelPerfectTest(levels[current_level].getLayer("foreground_bounce"), player))
 	{
-		player.setVelocity(sf::Vector2f(player.getVelocity().x, -2 * levels[current_level].bounce_velocity));
+		if (player.getVelocity().y > 0) {
+			player.setVelocity(sf::Vector2f(player.getVelocity().x, -levels[current_level].bounce_velocity));
+		}
 		sound.playSound("bounce", 20);
-		if (levels[current_level].bounce_velocity < 9)
-		{
-			levels[current_level].bounce_velocity += 2;
-		}
+		//if (levels[current_level].bounce_velocity < 9)
+		//{
+		//	levels[current_level].bounce_velocity += 2;
+		//}
 	}
-	else {
-		if (player.getVelocity().y == 0 && levels[current_level].bounce_velocity > 1)
-		{
-			levels[current_level].bounce_velocity--;
-		}
-	}
+	//else {
+	//	if (player.getVelocity().y == 0 && levels[current_level].bounce_velocity > 1)
+	//	{
+	//		levels[current_level].bounce_velocity--;
+	//	}
+	//}
 	return false;
 }

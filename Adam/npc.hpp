@@ -39,8 +39,7 @@ public:
 	/// default constructor 
 	/// \details
 	/// does nothing 
-	npc() {}
-	~npc();
+	npc() = default;
 
 	/// \brief 
 	/// updates the state of npc

@@ -33,7 +33,7 @@ private:
 	std::string next_level_name;
 public:
 	/// \brief factor used for bouncing
-	int bounce_velocity = 1;
+	int bounce_velocity = 450;
 
 	Level() {};
 	~Level() {};

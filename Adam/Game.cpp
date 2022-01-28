@@ -54,6 +54,10 @@ Game::Game(sf::RenderWindow &w, Character &player, HUD &hud, AnimationManager & 
 	geluidje.playMusic("audio/music1.wav", 35);
 
 	state = STATE::MENU;
+
+	for (const auto& projectile : player.projectiles) {
+		world_physics.moveables.push_back(projectile.get());
+	}
 }
 
 
@@ -125,6 +129,10 @@ void Game::handleInput()
 							world_physics.moveables.push_back(&np);
 						}
 
+						for (const auto& projectile : player.projectiles) {
+							world_physics.moveables.push_back(projectile.get());
+						}
+
 						main_camera.setCenter(player.getPosition());
 						main_camera.setSize(560, 315);
 						state = STATE::PLAYING;
@@ -168,7 +176,7 @@ void Game::handleInput()
 				if (!player.checkDead() && player.jumpCount < 2)
 				{
 					geluidje.playSoundTwo("jump", 40);
-					player.setVelocity(sf::Vector2f(player.getVelocity().x, -6));
+					player.setVelocity(sf::Vector2f(player.getVelocity().x, -player.jumpHeight));
 					player.jumpCount++;
 				}
 			}
@@ -189,11 +197,11 @@ void Game::handleInput()
 
 							if (player.getPosition().x < enemy.getPosition().x)
 							{
-								enemy.setVelocity(sf::Vector2f(player.getVelocity().x + 4, -4));
+								enemy.setVelocity(sf::Vector2f(50, -100));
 							}
 							else
 							{
-								enemy.setVelocity(sf::Vector2f(player.getVelocity().x - 4, -4));
+								enemy.setVelocity(sf::Vector2f(-50, -100));
 							}
 
 							if (enemy.checkDead()) {
@@ -230,7 +238,7 @@ void Game::handleInput()
 				player.state = state::WALKING;
 				player.setScale(sf::Vector2f(0.2, 0.2));
 				player.current_direction = movable::direction::RIGHT;
-				player.setVelocity(sf::Vector2f(3, player.getVelocity().y));
+				player.setVelocity(sf::Vector2f(125, player.getVelocity().y));
 			}
 		}
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) && !player.checkDead())
@@ -241,7 +249,7 @@ void Game::handleInput()
 				player.state = state::WALKING;
 				player.setScale(sf::Vector2f(-0.2, 0.2));
 				player.current_direction = movable::direction::LEFT;
-				player.setVelocity(sf::Vector2f(-3, player.getVelocity().y));
+				player.setVelocity(sf::Vector2f(-125, player.getVelocity().y));
 			}
 		}
 		else if (player.state != state::SLASHING && player.state != state::DEAD) //if the player is not slashing , not dead, and no button was pressed, the player is idle
@@ -345,22 +353,10 @@ void Game::handleInput()
 				break;
 			}
 		}
-
-		for (auto & enemy : enemies) {
-			if (!enemy.checkDead()) {
-
-				if (ai->shouldFollow_followDirection(&enemy, &player, geluidje))
-				{
-					geluidje.playSound("MaleHurtPain", 40);
-					auto c = damage_overlay.getColor();
-					damage_overlay.setColor(sf::Color(c.r, c.g, c.b, 100));
-				}
-			}
-		}
 	}
 	}
 }
-void Game::update() {
+void Game::update(float dt) {
 
 	switch (state)
 	{
@@ -401,8 +397,8 @@ void Game::update() {
 			}
 		}
 
-		world_physics.step_x_moveables();
-		world_physics.step_y_moveables();
+		world_physics.step_x_moveables(dt);
+		world_physics.step_y_moveables(dt);
 
 		if (lvl.check_interaction(player, geluidje)) 
 		{
@@ -421,12 +417,22 @@ void Game::update() {
 				world_physics.moveables.push_back(&np);
 			}
 
+			for (const auto& projectile : player.projectiles) {
+				world_physics.moveables.push_back(projectile.get());
+			}
 		}
 
-		for (auto &prj : player.projectiles) {
+		for (auto& prj : player.projectiles) {
 			if (!prj->isDeath()) {
-				prj->updateLive(1);
-				for (auto & enemie : enemies) {
+
+				// tick away projectile HP over time
+				float totalTime = projectileClock.getElapsedTime().asSeconds();
+				if (totalTime > 0.025f) {
+					prj->updateLive(1);
+					projectileClock.restart();
+				}
+
+				for (auto& enemie : enemies) {
 					if (prj->fight(&enemie, geluidje)) {
 						player.update_exp(20);
 						player.mana.add(50);
@@ -504,11 +510,21 @@ void Game::update() {
 			player.setVelocity(sf::Vector2f(0, 0));
 		}
 
+		for (auto& enemy : enemies) {
+			if (!enemy.checkDead()) {
+
+				if (ai->shouldFollow_followDirection(&enemy, &player, geluidje))
+				{
+					geluidje.playSound("MaleHurtPain", 40);
+					auto c = damage_overlay.getColor();
+					damage_overlay.setColor(sf::Color(c.r, c.g, c.b, 100));
+				}
+			}
+		}
 	}
 	break;
 
 	}
-	rerender = true;
 }
 
 void Game::render() {
@@ -573,8 +589,6 @@ void Game::render() {
 			center.y -= 50;
 			main_camera.setCenter(center);
 			window.setView(main_camera);
-
-			rerender = false;
 			window.display();
 
 		}

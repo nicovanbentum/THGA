@@ -10,9 +10,10 @@
 /// extends to form drawable
 class movable : public drawable {
 protected:
-	sf::Vector2f velocity;
+	sf::Vector2f velocity = sf::Vector2f(0.0f, 0.0f);
 	
 public:
+	bool bCanCollide = true;
 	bool collide_others = true;
 	bool canJump = true;
 	int jumpCount = 0;
@@ -21,7 +22,7 @@ public:
 	/// enum class of directions
 	/// \details
 	/// an enum class to indicate the direction of the movable
-	enum class direction { LEFT, RIGHT };
+	enum direction { LEFT, RIGHT };
 	direction current_direction = direction::RIGHT;
 
 	/// \brief
@@ -42,7 +43,7 @@ public:
 	/// return velocity
 	/// \details
 	/// returns the velocity of the movable
-	sf::Vector2f getVelocity();
+	sf::Vector2f& getVelocity();
 
 	/// \brief
 	/// moves the movable
