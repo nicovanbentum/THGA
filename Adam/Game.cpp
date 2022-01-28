@@ -289,8 +289,8 @@ void Game::handleInput()
 				auto delta = mouse_pos - pPos;
 				float angle_r = atan2(delta.y, delta.x);
 				auto angle_degrees = angle_r * (180 / 3.14);
-				auto delta_normalized = delta / sqrt(pow(delta.x, 2) + pow(delta.y, 2));
-				sf::Vector2f shoot_vector(delta_normalized * 15.f);
+				auto delta_normalized = delta / float(sqrt(pow(delta.x, 2) + pow(delta.y, 2)));
+				sf::Vector2f shoot_vector(delta_normalized * 100.f);
 
 				//shoot the projectile
 				player.shootProjectile(pPos, shoot_vector, angle_degrees); 
