@@ -61,7 +61,8 @@ namespace Collision {
 	/// Load an imagefile into the given texture and create a bitmask for it
 	/// This is much faster than creating the bitmask for a texture on the first run of "PixelPerfectTest"
 	/// The function returns false if the file could not be opened for some reason.
-	bool CreateTextureAndBitmask(sf::Texture &LoadInto, const std::string& Filename);
+	bool CreateTextureAndBitmask(std::shared_ptr<sf::Texture> LoadInto, const std::string& Filename);
+	bool CreateTextureAndBitmask(sf::Texture& LoadInto, const std::string& Filename);
 
 	/// \details
 	/// Test for collision using circle collision dection

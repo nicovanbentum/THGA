@@ -10,58 +10,63 @@ namespace Collision
 	class BitmaskManager
 	{
 	public:
-		~BitmaskManager() {
-			std::map<const sf::Texture*, sf::Uint8*>::const_iterator end = Bitmasks.end();
-			for (std::map<const sf::Texture*, sf::Uint8*>::const_iterator iter = Bitmasks.begin(); iter != end; iter++)
-				delete[] iter->second;
-		}
 
-		sf::Uint8 GetPixel(const sf::Uint8* mask, const sf::Texture* tex, unsigned int x, unsigned int y) {
+		sf::Uint8 GetPixel(const std::vector<sf::Uint8>& mask, const sf::Texture* tex, unsigned int x, unsigned int y) {
 			if (x > tex->getSize().x || y > tex->getSize().y)
 				return 0;
 
-			return mask[x + y * tex->getSize().x];
+			const auto index = x + y * tex->getSize().x;
+
+			if (index >= mask.size()) return 0;
+
+			assert(index < mask.size());
+
+			return mask[index];
 		}
 
-		sf::Uint8* GetMask(const sf::Texture* tex) {
-			sf::Uint8* mask;
-			std::map<const sf::Texture*, sf::Uint8*>::iterator pair = Bitmasks.find(tex);
-			if (pair == Bitmasks.end())
-			{
-				sf::Image img = tex->copyToImage();
-				mask = CreateMask(tex, img);
-			}
-			else
-				mask = pair->second;
+		std::vector<sf::Uint8>& GetMask(const sf::Texture& tex) {
+			std::vector<sf::Uint8> mask;
+			auto pair = Bitmasks.find(&tex);
 
-			return mask;
+			assert(pair != Bitmasks.end());
+
+			return pair->second;
 		}
 
-		void removeMask(const sf::Texture* tex)
+		void removeMask(const sf::Texture& tex)
 		{
-			Bitmasks.erase(tex);
+			Bitmasks.erase(&tex);
 		}
 
-		sf::Uint8* CreateMask(const sf::Texture* tex, const sf::Image& img) {
-			sf::Uint8* mask = new sf::Uint8[tex->getSize().y*tex->getSize().x];
+		std::vector<sf::Uint8>& CreateMask(const sf::Texture* tex, const sf::Image& img) {
+			std::vector<sf::Uint8> mask(img.getSize().y * img.getSize().x);
 
-			for (unsigned int y = 0; y < tex->getSize().y; y++)
+			for (unsigned int y = 0; y < img.getSize().y; y++)
 			{
-				for (unsigned int x = 0; x < tex->getSize().x; x++)
-					mask[x + y * tex->getSize().x] = img.getPixel(x, y).a;
+				for (unsigned int x = 0; x < img.getSize().x; x++) {
+					const auto index = x + y * img.getSize().x;
+					assert(index < mask.size());
+
+					mask[x + y * img.getSize().x] = img.getPixel(x, y).a;
+				}
+
 			}
 
-			Bitmasks.insert(std::pair<const sf::Texture*, sf::Uint8*>(tex, mask));
+			{
+				std::scoped_lock(mutex);
+				Bitmasks.insert({ tex, mask });
+			}
 
-			return mask;
+			return Bitmasks[tex];
 		}
 	private:
-		std::map<const sf::Texture*, sf::Uint8*> Bitmasks;
+		std::mutex mutex;
+		std::map<const sf::Texture*, std::vector<sf::Uint8>> Bitmasks;
 	};
 
 	BitmaskManager Bitmasks;
 
-	void removeBitmask(const sf::Texture* tex)
+	void removeBitmask(const sf::Texture& tex)
 	{
 		Bitmasks.removeMask(tex);
 	}
@@ -72,8 +77,14 @@ namespace Collision
 			sf::IntRect O1SubRect = Object1.getTextureRect();
 			sf::IntRect O2SubRect = Object2.getTextureRect();
 
-			sf::Uint8* mask1 = Bitmasks.GetMask(Object1.getTexture());
-			sf::Uint8* mask2 = Bitmasks.GetMask(Object2.getTexture());
+			auto tex1 = Object1.getTexture();
+			auto tex2 = Object2.getTexture();
+
+			assert(tex1);
+			assert(tex2);
+
+			auto& mask1 = Bitmasks.GetMask(*tex1);
+			auto& mask2 = Bitmasks.GetMask(*tex2);
 
 			// Loop through our pixels
 			for (int i = Intersection.left; i < Intersection.left + Intersection.width; i++) {
@@ -98,13 +109,21 @@ namespace Collision
 		return false;
 	}
 
-	bool CreateTextureAndBitmask(sf::Texture &LoadInto, const std::string& Filename)
+	bool CreateTextureAndBitmask(std::shared_ptr<sf::Texture> LoadInto, const std::string& Filename)
+	{	
+		sf::Image img;
+		if (!img.loadFromFile(Filename))  return false;
+		if (!LoadInto->loadFromImage(img)) return false;
+
+		Bitmasks.CreateMask(LoadInto.get(), img);
+		return true;
+	}
+
+	bool CreateTextureAndBitmask(sf::Texture& LoadInto, const std::string& Filename)
 	{
 		sf::Image img;
-		if (!img.loadFromFile(Filename))
-			return false;
-		if (!LoadInto.loadFromImage(img))
-			return false;
+		if (!img.loadFromFile(Filename))  return false;
+		if (!LoadInto.loadFromImage(img)) return false;
 
 		Bitmasks.CreateMask(&LoadInto, img);
 		return true;
