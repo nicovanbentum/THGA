@@ -16,6 +16,22 @@
         "platform": "windows & static"
       },
       {
+        "name": "libflac",
+        "platform": "windows & static"
+      },
+      {
+        "name": "libogg",
+        "platform": "windows & static"
+      },
+      {
+        "name": "libvorbis",
+        "platform": "windows & static"
+      },
+      {
+        "name": "openal-soft",
+        "platform": "windows & static"
+      },
+      {
         "name": "sfml",
         "platform": "windows & static"
       }
