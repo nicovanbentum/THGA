@@ -20,6 +20,7 @@ AnimationManager::AnimationManager(const std::string & s)
 		lines.push_back(line);
 	}
 
+	std::mutex mutex;
 	std::vector<std::future<void>> futures;
 
 	for(const auto& line : lines) {
@@ -28,7 +29,10 @@ AnimationManager::AnimationManager(const std::string & s)
 
 		animations.try_emplace(object);
 		animations[object].try_emplace(action, action);
-		futures.push_back(animations[object][action].addFrame("assets/" + path));
+
+		std::scoped_lock lock(mutex);
+		futures.push_back(animations[object][action].addFrameAsync("assets/" + path));
+		// animations[object][action].addFrame("assets/" + path);
 
 		std::cout << "assets/" << path << '\n';
 	}
